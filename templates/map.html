@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CTracker | Heatmap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Visualize currently reported CoVID-19 patients contamination radius.">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="lib/leaflet.zoomdisplay.css" rel="stylesheet">
+    <link rel="stylesheet" href="index.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="visualizer">
+    <!-- Shown when heatmap is editted -->
+    <div class="container hidden" id="popupbox">
+        <div class="content">
+            <!-- Intro, before editting -->
+            <div id="intro" class="content-box hidden">
+                <h2>CTracker | Heatmap - Record CoVID-19 Patient Travel</h2>
+                <p>This tool works by adding heat trail <b>wherever your mouse moves</b>. The recording <b>will not start</b> unless you <b>click on the mouse</b> at the <b>starting point</b>. Ideally zoom in all the way to 17 for marking precise locations of visit. Zoom out to 14 before marking paths taken for travel.</p>
+                <p>To <b>stop the recording</b>, just <b>click</b> when you reach an <b>end position</b> on the map. If you want to undo a recording after it has been stopped, please use the additional controls available in the record menu at the bottom of the map. If recording is verified to be correct by yourself, submit it by selection the submit option in the record menu at the bottom. YOU WILL BE REQUIRED TO ENTER THE PATIENT ID AND TIMEFRANE OF PATIENTS PRESENSE AT THE RECORDED LOCATION WHILE SUBMITTING. PLEASE ENSURE NOT TO RECORD LONG TIMEFRAMES ON ONE GO.</p>
+                <p>KINDLY ENTER YOUR NAME BEFORE BEGINNING THE PROCESS FOR INTERNAL VERIFICATION.</p>
+                <p class="fallback"><b>NAME</b>: <input name="recorderName" type="text" id="recorderName"></input></p>
+                <p><button id="startRecordBtn">RECORD</button></p>
+            </div>
+
+            <!-- Shown when the submit button is clicked for a recording -->
+            <div id="submit" class="content-box hidden">
+                    <h2>CTracker | Heatmap - Submit CoVID-19 Patient Travel</h2>
+                    <p class="fallback"><b>PATIENT ID</b>:<input name="patientId" type="text" id=patientId></input></p>
+                    <p class="fallback"><b>Start Date of Travel</b>:<input name="patientStartDate" type="date" id=patientStartDate></input></p>
+                    <p class="fallback"><b>Start Time of Travel</b>:<input name="patientStartTime" type="time" id=patientStartTime></input></p>
+                    <p class="fallback"><b>End Date of Travel</b>:<input name="patientEndDate" type="date" id=patientEndDate></input></p>
+                    <p class="fallback"><b>End Time of Travel</b>:<input name="patientEndTime" type="time" id=patientEndTime></input></p>
+                    <p><button id="submitRecordBtn" >SUBMIT</button></p>
+            </div>
+
+            <!-- Shown in interim while processing is in progress -->
+            <div id="working" class="content-box hidden">
+                <h2>Processing data...</h2>
+                <div class="loading">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+                <p><span id="currentStatus">UPLOADING</span></p>
+            </div>
+
+            <!-- Content displayed once processing complete -->
+            <div id="done" class="content-box hidden">
+                <h2>CTracker | Heatmap - CoVID-19 Patient <span class="patientCnf">P01</span> Travel </h2>
+                <p>Successfully processed recording of CoVID-19 patient <span class="patientCnf">P01</span> travel submitted by <span id="recorderCnf">AVS</span>.</p>
+                <p>Your Referrence Number is: <h3 id="recordCnfId">1</h3></p>
+                <p><button id="closeRecordBtn">CLOSE</button></p>
+            </div>
+        </div>
+    </div>
+    <!-- Appear when heatmap is displayed -->
+    <div id="controls">
+        <div class="title">
+            CTracker
+            <span>(hover for additional controls)</span>
+        </div>
+        <div class="control-block actions">
+            <button id="makeRecording" class="control">Start Recording</button>
+        </div>
+        <div class="control-block actions hidden">
+            <button id="submitRecording" class="control">Submit Recording</button>
+        </div>
+    </div>
+
+    <!-- The map, populated by leaflet.js -->
+    <div id="map"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/3.8.4/dropzone.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<!-- Font Awesome JS -->
+<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+<script src="lib/leaflet.heat.min.js"></script>
+<script src="lib/prettysize.js"></script>
+<script src="lib/oboe-browser.min.js"></script>
+<script src="lib/leaflet.zoomdisplay.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+<script src="index.js?v=3"></script>
+
+
+</body>
+</html>

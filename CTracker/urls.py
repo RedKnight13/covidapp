@@ -18,5 +18,7 @@ from django.urls import path,include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include("idlepage.urls")),
+    path('000/',include("idlepage.urls")),
+    path('',include("crowdSourceMap.urls")),
+    # path('saveData/',)
 ]
