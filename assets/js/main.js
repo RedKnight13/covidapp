@@ -27,6 +27,11 @@ jQuery(document).ready(function () {
 
     jQuery(".site-content").fitVids();
 
+    jQuery("#user-plot").on("click",function(){
+        jQuery("#mapFrame").attr("src","assets/maps/map2.html");
+        return false;
+    });
+
 
     //Add before and after "blockquote" custom class
     jQuery('blockquote.inline-blockquote').prev('p').addClass('wrap-blockquote');

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CTracker | Heatmap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Visualize your collected Google Location History data using an interactive heatmap directly in your browser.">
+    <link href="../../assets/css/style.css" rel="stylesheet">
+    <link href="../../assets/lib/leaflet.zoomdisplay.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/map2.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css"/>
+</head>
+<body>
+<div class="visualizer">
+   
+    <!-- Shown before the heatmap is displayed -->
+    <div class="container">
+        <div class="content">
+            <!-- Intro, before data has been uploaded -->
+            <div id="intro" class="content-box">
+                <h3>CTracker | Heatmap - Check Your Travel History</h3>
+                <div class="note">
+                    <strong>Note:</strong> This tool only generates heatmaps of your location history, we do not yet have authentic data for cross referring it with valid CoVID-19 cases.
+                </div>
+                <p>Welcome to <b>CTracker</b>, a tool for visualizing your collected Google <a href="https://google.com/locationhistory" target="_blank">Location History</a> data with heatmaps. <i>Don't worry&mdash;all processing and visualization happens directly on your computer, so rest assured that nobody is able to access your Location History but you... and Google, of course.</i></p>
+                <p>To start off, you'll need to go to <a href="https://takeout.google.com/settings/takeout/custom/location_history" target="_blank">Google Takeout</a> by clicking on the button below to download your Location History data. Then hit "Next" and, finally, click "Create archive". Once the archive has been created, click "Download". <b>Then, drag and drop <i>takeout-xxxxxx.zip</i> from downloads onto this page.</b> Let the visualization begin!</p>
+                <p><button id="takeoutLink">Google Takeout</button></p>
+                <p class="fallback">Alternatively, select your <b>takeout-xxxxxx.zip</b> file directly: <input name="file" type="file" id="file"></input></p>
+            </div>
+
+
+            <!-- Shown in interim while processing is in progress -->
+            <div id="unzipping" class="content-box hidden">
+                <h2>Unzipping Archive...</h2>
+                <div class="loading">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+                <p><span id="unzipStatus">Waking up...</span></p>
+                <p>Please wait while the file is uncompressed.</p>
+            </div>
+
+            <!-- Shown in interim while processing is in progress -->
+            <div id="working" class="content-box hidden">
+                <h2>Processing data...</h2>
+                <div class="loading">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+                <p><span id="currentStatus">Waking up...</span></p>
+                <p>This may take a while... sit back, get a cup of tea or something.</p>
+                <p><i>Why does it take so long?</i> Depending on how long Google's been tracking your location, you may have hundreds of thousands of [latitude, longitude] pairs, every one of which must be loaded, analyzed, and plotted. That's a lot of dots.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appear when heatmap is displayed -->
+    <div id="controls">
+        <div class="title">
+            CTracker | Heatmap
+            <span>(hover for additional controls)</span>
+        </div>
+        <div class="control-block">
+            <label for="radius">Point radius</label>
+            <input type="range" min="1" max="30" id="radius" class="control">
+        </div>
+        <div class="control-block">
+            <label for="blur">Blur radius</label>
+            <input type="range" min="1" max="25" id="blur" class="control">
+        </div>
+        <div class="control-block">
+            <label for="heatOpacity">Heat opacity</label>
+            <input type="range" min="0" max="1" step="0.05" id="heatOpacity" class="control">
+        </div>
+        <div class="control-block">
+            <label for="tileOpacity">Map opacity</label>
+            <input type="range" min="0" max="1" step="0.05" id="tileOpacity" class="control">
+        </div>
+        <div class="control-block actions">
+            <button id="reset">Reset to defaults</button>
+        </div>
+    </div>
+
+    <!-- The map, populated by leaflet.js -->
+    <div id="map"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/3.8.4/dropzone.min.js"></script>
+<script src="../../assets/js/leaflet.heat.min.js"></script>
+<script src="../../assets/js/prettysize.js"></script>
+<script src="../../assets/js/oboe-browser.min.js"></script>
+<script src="../../assets/lib/leaflet.zoomdisplay.js"></script>
+<script type="text/javascript" src="../../assets/js/zip.js"></script>
+<script src="../../assets/js/map2.js?v=3"></script>
+
+</body>
+</html>
