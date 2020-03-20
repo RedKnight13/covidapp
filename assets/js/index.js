@@ -217,7 +217,12 @@
 
 		$.post("/saveData",{"heatmap":JSON.stringify(minified), "recorder": recorder, "patientId": patientId, "patientStart": patientStart, "patientEnd": patientEnd}, function(data){
 			console.log(data);
-			// data=JSON.parse(data);
+			try{
+				data=JSON.parse(data);	
+			}
+			catch(err){
+				data=data;
+			}
 			$(".patientCnf").html(data["patientId"]);
 			$("#recorderCnf").html(data["recorder"]);
 			$("#recordCnfId").html(data["id"]);
