@@ -36,15 +36,19 @@ def get_client_ip(request):
 def getData(request):
 	response=dict()
 	try:
-		heatMap=HeatMap.objects.all()
-		for i in heatMap:
-			if(i.id in response):
-				response[i.id]=response[i.id].append([i.lat,i.lng])
-			else:
-				response[i.id]=[i.lat,i.lng]
+		markUp=MarkUp.objects.all()
+		for i in markUp:
+			heatmap=HeatMap.objects.filter(mid=i.id)
+			latlng=list()
+			respObj=dict()
+			for j in heatmap:
+				latlng.append([i.lat,i.lng])
+			respObj["startTime"]=i.patientStart
+			respObj["endTime"]=i.patientEnd
+			respObj["latlng"]=latlng
+			response[i.id]=respObj
 	except Exception as e:
-		print(e)
-
+		print("GetDataError: ",e)
 	
 	jsonResponse=json.dumps(response)
 	return HttpResponse(jsonResponse,content_type="application/json")
