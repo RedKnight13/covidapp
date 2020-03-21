@@ -46,8 +46,8 @@ body a
 
 .doc-loader img
 {
-    width: 10%;
-    height: 10%;        
+    width: 50vh;
+    /*height: 50vh;*/        
 }
 
 .nicescroll-rails-vr:hover

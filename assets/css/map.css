@@ -237,6 +237,10 @@ input#email {
   outline: 0;
 }
 
+div.control-btn{
+  margin: 4vh 0;
+}
+
 button.btn-menu {
   font-family: PTSans, Helvetica, Arial, sans-serif;
   display: inline-block;

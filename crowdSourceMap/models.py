@@ -16,3 +16,6 @@ class MarkUp(models.Model):
 	patientEnd=models.DateTimeField(default=None)
 	timestamp=models.DateTimeField(default=datetime.now())
 	active=models.IntegerField(default=0)
+
+class VisitorIp(models.Model):
+	ip=models.CharField(max_length=64)

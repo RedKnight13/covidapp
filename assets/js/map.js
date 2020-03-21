@@ -71,8 +71,8 @@
 				if(toggleEdit){
 					map.off(event2);
 					toggleEdit = false;
-					$(".pauseRecord").addClass("hidden");
-					$(".unpauseRecord").removeClass("hidden");
+					$(".pauseRecord").parent().addClass("hidden");
+					$(".unpauseRecord").parent().removeClass("hidden");
 				}
 			});
 	}
@@ -81,8 +81,8 @@
 		if(tempLatLng.length)
 			arrayLatLng.push(tempLatLng);
 		tempLatLng=[]
-		$(".pauseRecord").removeClass("hidden");
-		$(this).addClass("hidden");
+		$(".pauseRecord").parent().removeClass("hidden");
+		$(this).parent().addClass("hidden");
 		map.on("click", function(event1){
 			if(!toggleEdit)
 			{
@@ -155,6 +155,8 @@
 					$("#submitRecording").parent().removeClass("hidden");
 					break;
 				case 'submitRecording':
+						if(arrayLatLng.length==0 && tempLatLng.length==0)
+							break;
 						$('body').removeClass('map-active');
 						$('#popupbox').removeClass("hidden");
 						$("#submit").removeClass("hidden");
@@ -172,12 +174,13 @@
 		$('#popupbox').addClass("hidden");
 		$('body').addClass('map-active');
 		$("#intro").addClass("hidden");
-		toastr.info("Recording Controls <br /> <button class='btn btn-danger pauseRecord hidden'>Pause</button> <br /> <button class='btn btn-success unpauseRecord'>Unpause</button> <br /> <button class='btn btn-success undoRecord' onClick='undoRecord()'>Undo</button>");
+		toastHtml = '<div class="col"><div class="row">Recording Controls</div></div><div class="col"><div class="row"><div class="my-1 col-lg-4 col-lg-offset-2 hidden"><button class="btn btn-danger pauseRecord">Pause</button> </div><div class="my-1 col-mg-4 col-mg-offset-2 col-lg-4 col-lg-offset-2"> <button class="btn btn-success unpauseRecord">Unpause</button></div></div><div class="row"><div class="my-1 col-lg-6 col-lg-offset-4"><button class="btn btn-success undoRecord" onclick="undoRecord()">Undo</button></div></div><div></div></div>';
+		toastr.info(toastHtml);
 		
 		
 		$(".pauseRecord").on("click",function(){
-			$(".unpauseRecord").removeClass("hidden");
-			$(this).addClass("hidden");
+			$(".unpauseRecord").parent().removeClass("hidden");
+			$(this).parent().addClass("hidden");
 			toggleEdit = false;
 		});
 	

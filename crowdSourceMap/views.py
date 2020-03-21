@@ -1,10 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 import json
-from .models import HeatMap,MarkUp
+from .models import HeatMap,MarkUp,VisitorIp
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 def indexpage(request):
+	ip=get_client_ip(request)
+	try:
+		visitorIp=VisitorIp(ip=ip)
+		visitorIp.save()
+	except Exception as e:
+		print(e)
+		print("Unable to save Visitor IpAddress")
 	return render(request,"holderPage.html")
 
 

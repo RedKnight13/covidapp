@@ -82,6 +82,18 @@ DATABASES = {
     }
 }
 
+production_db ={
+    'default': {
+
+    'ENGINE':'django.db.backends.mysql',
+    'NAME': 'ctracker_local',
+    'HOST':'localhost',
+    'USER': 'root',
+    'PASSWORD': '',
+    'PORT':3306
+
+}}
+DATABASES.update(production_db)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -118,10 +130,10 @@ USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-STATIC_ROOT="/assets/"
-MEDIA_ROOT = "/media/"
+# STATIC_ROOT="/assets/"
+# MEDIA_ROOT = "/media/"
 STATIC_URL = '/assets/'
 
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'assets'),
-# ]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'assets'),
+]
