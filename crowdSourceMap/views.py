@@ -32,7 +32,7 @@ def get_client_ip(request):
     # response["IpAddress"]=ip
     # jsondata=json.dumps(response)
     # return HttpResponse(jsondata,content_type="application/json")
-
+@csrf_exempt
 def getData(request):
 	response=dict()
 	try:
@@ -43,8 +43,8 @@ def getData(request):
 			respObj=dict()
 			for j in heatmap:
 				latlng.append([j.lat,j.lng])
-			respObj["startTime"]=i.patientStart
-			respObj["endTime"]=i.patientEnd
+			respObj["startTime"]=str(i.patientStart)
+			respObj["endTime"]=str(i.patientEnd)
 			respObj["latlng"]=latlng
 			response[i.id]=respObj
 	except Exception as e:
