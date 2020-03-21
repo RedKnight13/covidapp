@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'CTracker.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    'ENGINE':'django.db.backends.mysql',
+    'NAME': 'ctracker_local',
+    'HOST':'localhost',
+    'USER': 'root',
+    'PASSWORD': '',
+    'PORT':3306
     }
 }
 
@@ -86,10 +90,10 @@ production_db ={
     'default': {
 
     'ENGINE':'django.db.backends.mysql',
-    'NAME': 'ctracker_local',
+    'NAME': 'ctracker',
     'HOST':'localhost',
     'USER': 'root',
-    'PASSWORD': '',
+    'PASSWORD': 'root',
     'PORT':3306
 
 }}
@@ -130,10 +134,10 @@ USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-# STATIC_ROOT="/assets/"
-# MEDIA_ROOT = "/media/"
+STATIC_ROOT="/assets/"
+MEDIA_ROOT = "/media/"
 STATIC_URL = '/assets/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'assets'),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'assets'),
+# ]
