@@ -39,14 +39,16 @@ def getData(request):
 		markUp=MarkUp.objects.all()
 		for i in markUp:
 			heatmap=HeatMap.objects.filter(mid=i.id)
-			latlng=list()
+			index=0
 			respObj=dict()
 			for j in heatmap:
-				latlng.append([j.lat,j.lng])
-			respObj["startTime"]=str(i.patientStart)
-			respObj["endTime"]=str(i.patientEnd)
-			respObj["latlng"]=latlng
-			response[i.id]=respObj
+				respObj["id"]=i.id
+				respObj["lat"]=j.lat
+				respObj["lng"]=j.lng
+				respObj["start"]=str(i.patientStart)
+				respObj["end"]=str(i.patientEnd)
+				response[index]=respObj
+				index+=1
 	except Exception as e:
 		print("GetDataError: ",e)
 
