@@ -42,14 +42,14 @@ def getData(request):
 			latlng=list()
 			respObj=dict()
 			for j in heatmap:
-				latlng.append([i.lat,i.lng])
+				latlng.append([j.lat,j.lng])
 			respObj["startTime"]=i.patientStart
 			respObj["endTime"]=i.patientEnd
 			respObj["latlng"]=latlng
 			response[i.id]=respObj
 	except Exception as e:
 		print("GetDataError: ",e)
-	
+
 	jsonResponse=json.dumps(response)
 	return HttpResponse(jsonResponse,content_type="application/json")
 
