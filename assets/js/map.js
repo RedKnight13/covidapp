@@ -128,8 +128,8 @@
 		$.getJSON('/getData',function(data){
 			Object.keys(data).forEach(function(key){
 				var routes = data[key];
-				latlngs1.push(L.latLng(routes[0],routes[1]));
-				latlngs2.push(L.latLng(routes[0],routes[1]));
+				latlngs1.push(L.latLng(routes["lat"],routes["lng"]));
+				latlngs2.push(L.latLng(routes["lat"],routes["lng"]));
 			});
 		});
 

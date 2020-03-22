@@ -1,5 +1,5 @@
-( function ( $, L, prettySize ) {
-	var map, heat,
+//( function ( $, L, prettySize ) {
+	var map, heat, heatTime, coordinates=[], cCoordinates=[],
 		heatOptions = {
 			tileOpacity: 1,
 			heatOpacity: 1,
@@ -8,8 +8,8 @@
 		};
 	zip.workerScriptsPath = "../../../assets/js/";
 	/*zip.workerScripts = {
-		deflater: ['lib/z-worker.js', 'lib/deflate.js'],
-		inflater: ['lib/z-worker.js', 'lib/inflate.js']
+		deflater: ['../../../assets/js/z-worker.js', '../../../assets/js/deflate.js'],
+		inflater: ['../../../assets/js/z-worker.js', '../../../assets/js/inflate.js']
 	  };*/
 
 	function status( message ) {
@@ -28,13 +28,34 @@
 
 	function stageOne () {
 		var dropzone;
+		var today = new Date();
 
 		// Initialize the map
-		map = L.map( 'map' ).setView( [10.4399233,76.445535], 8 );
+		map = L.map( 'map',{
+		timeDimensionControl: true,
+		timeDimensionControlOptions: {
+		  position: "bottomright",
+		  autoPlay: false,
+		  timeSlider: true,
+		  loopButton: true,
+		  minSpeed: 1,
+		  speedStep: 0.5,
+		  maxSpeed: 15,
+		  timeSliderDragUpdate: true,
+		  playerOptions: {
+			transitionTime: 100,
+			loop: false,
+			startOver: true } },
+		timeDimension: true,
+		timeDimensionOptions: {
+		  timeInterval: "2020-01-01/"+today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate(),
+		  period: "PT12H",
+		  currentTime: new Date("2020-01-01").getTime() }
+		}).setView( [10.4399233,76.445535], 8 );
 		L.tileLayer( 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors.',
 			maxZoom: 18,
-			minZoom: 2
+			minZoom: 2 
 		} ).addTo( map );
 
 		// Initialize the dropzone
@@ -103,7 +124,7 @@
 
 	function stageTwo ( file ) {
 
-		heat = L.heatLayer( [], heatOptions ).addTo( map );
+		heat = L.heatLayer( [], heatOptions );
 
 		var type;
 
@@ -130,21 +151,44 @@
 		var os = new oboe();
 
 		os.node( 'locations.*', function ( location ) {
-			var latitude = location.latitudeE7 * SCALAR_E7,
-				longitude = location.longitudeE7 * SCALAR_E7;
+			if(location.timestampMs>=1518020678010){
+				var latitude = location.latitudeE7 * SCALAR_E7,
+					longitude = location.longitudeE7 * SCALAR_E7;
 
-			// Handle negative latlngs due to google unsigned/signed integer bug.
-			if ( latitude > 180 ) latitude = latitude - (2 ** 32) * SCALAR_E7;
-			if ( longitude > 180 ) longitude = longitude - (2 ** 32) * SCALAR_E7;
+				// Handle negative latlngs due to google unsigned/signed integer bug.
+				if ( latitude > 180 ) latitude = latitude - (2 ** 32) * SCALAR_E7;
+				if ( longitude > 180 ) longitude = longitude - (2 ** 32) * SCALAR_E7;
 
-			if ( type === 'json' ) latlngs.push( [ latitude, longitude ] );
+				//if ( type === 'json' ) latlngs.push( [ latitude, longitude ] );
+				coordinates.push([latitude,longitude,location.timestampMs]);
+			}
 			return oboe.drop;
 		} ).done( function () {
-			status( 'Generating map...' );
-			heat._latlngs = latlngs;
+			$.getJSON('/getData',function(data){
+				Object.keys(data).forEach(function(key){
+					var routes = data[key];
+					cCoordinates.push([routes["lat"],routes["lng"],new Date(routes["startTime"]).getTime(),new Date(routes["endTime"]).getTime()]);
+				});
+				heat.cData = {"cCoordinates":cCoordinates,"coordinates":coordinates};
+				heatTime = new L.TimeDimension.Layer.Heat(heat,{
+					//updateTimeDimension: true,
+					//updateTimeDimensionMode: 'replace',
+					// addlastPoint: false,
+					duration: 'PT12H',
+				  }).addTo( map );
 
-			heat.redraw();
-			stageThree(  );
+				status( 'Generating map...' );
+				
+				//TODO: write code for generating heatmap with TimeDimension
+
+				stageThree(  );
+			});
+
+			//status( 'Generating map...' );
+			//heat._latlngs = latlngs;
+
+			//heat.redraw();
+			//stageThree(  );
 
 		} );
 
@@ -295,4 +339,5 @@
 		return locations;
 	}
 
-}( jQuery, L, prettySize ) );
+
+//}( jQuery, L, prettySize ) );

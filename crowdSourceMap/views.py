@@ -45,8 +45,8 @@ def getData(request):
 				respObj["id"]=i.id
 				respObj["lat"]=j.lat
 				respObj["lng"]=j.lng
-				respObj["start"]=str(i.patientStart)
-				respObj["end"]=str(i.patientEnd)
+				respObj["startTime"]=str(i.patientStart)
+				respObj["endTime"]=str(i.patientEnd)
 				response[index]=respObj
 				index+=1
 	except Exception as e:
